@@ -45,14 +45,15 @@ facebook/react" >repository_list.txt
 
 ## Configuration
 
-To avoid GitHub API rate limits, you can uncomment and modify the Authorization header section in the code to include your GitHub personal access token:
+To avoid GitHub API rate limits, you can use a GitHub personal access token.
 
-```rust
-headers.insert(
-    "Authorization",
-    HeaderValue::from_str(&format!("token {}", "YOUR_GITHUB_TOKEN"))?,
-);
+Set the `GITHUB_TOKEN` environment variable:
+
+```bash
+export GITHUB_TOKEN=your_github_token
 ```
+
+Using a GitHub token is optional but recommended to avoid rate limiting on frequent API calls.
 
 ## Dependencies
 

@@ -38,11 +38,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut headers = HeaderMap::new();
     headers.insert(USER_AGENT, HeaderValue::from_static("GitHub-Stars-Fetcher"));
 
-    // Add your GitHub token if you have one to avoid rate limits
-    // headers.insert(
-    //     "Authorization",
-    //     HeaderValue::from_str(&format!("token {}", "YOUR_GITHUB_TOKEN"))?,
-    // );
+    // Try to read GitHub token from environment variable to avoid rate limits
+    let github_token = std::env::var("GITHUB_TOKEN").ok();
+    if github_token.is_some() {
+        println!("Using GitHub token from environment for API requests");
+    }
+    if let Ok(token) = std::env::var("GITHUB_TOKEN") {
+        headers.insert(
+            "Authorization",
+            HeaderValue::from_str(&format!("token {}", token))?,
+        );
+    }
 
     let client = reqwest::Client::builder()
         .default_headers(headers)

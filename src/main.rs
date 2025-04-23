@@ -26,6 +26,10 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         return Ok(());
     }
 
+    // Parse command line arguments
+    let args: Vec<String> = std::env::args().collect();
+    let markdown_format = args.iter().any(|arg| arg == "--markdown" || arg == "-m");
+
     // Create a table for output
     let mut table = Table::new();
     table.add_row(row!["Repository", "Stars", "URL"]);
@@ -87,13 +91,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Sort by stars (descending)
     results.sort_by(|a, b| b.1.cmp(&a.1));
 
-    // Add results to the table
-    for (repo, stars, url) in results {
-        table.add_row(row![repo, stars, url]);
-    }
+    if markdown_format {
+        // Print results in markdown format
+        for (repo, stars, url) in results {
+            println!("- [{}]({}) ({}⭐)", repo, url, stars);
+        }
+    } else {
+        // Add results to the table
+        for (repo, stars, url) in results {
+            table.add_row(row![repo, stars, url]);
+        }
 
-    // Print the table
-    table.printstd();
+        // Print the table
+        table.printstd();
+    }
 
     Ok(())
 }
